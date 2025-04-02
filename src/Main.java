@@ -2,7 +2,6 @@ public class Main {
     public static void main(String[] args) {
         TaskManager manager = new TaskManager();
 
-        // Создаем задачи
         Task task1 = manager.createTask("Задача 1", "Описание задачи 1");
         Task task2 = manager.createTask("Задача 2", "Описание задачи 2");
 
