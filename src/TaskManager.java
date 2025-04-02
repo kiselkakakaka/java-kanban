@@ -13,7 +13,6 @@ public class TaskManager {
         return nextId++;
     }
 
-    // Методы для задач
     public List<Task> getAllTasks() {
         return new ArrayList<>(tasks.values());
     }
@@ -42,7 +41,6 @@ public class TaskManager {
         tasks.clear();
     }
 
-    // Методы для подзадач
     public List<Subtask> getAllSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
@@ -92,7 +90,6 @@ public class TaskManager {
         }
     }
 
-    // Методы для эпиков
     public List<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
     }
@@ -129,7 +126,6 @@ public class TaskManager {
         subtasks.clear();
     }
 
-    // Дополнительные методы
     public List<Subtask> getSubtasksByEpic(int epicId) {
         Epic epic = epics.get(epicId);
         if (epic == null) {
