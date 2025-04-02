@@ -1,12 +1,11 @@
-import java.util.Objects;
-
 public class Task {
-    protected int id;
-    protected String name;
-    protected String description;
-    protected Status status;
+    private int id;
+    private String name;
+    private String description;
+    private TaskStatus status;
 
-    public Task(String name, String description, Status status) {
+    public Task(int id, String name, String description, TaskStatus status) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
@@ -36,25 +35,12 @@ public class Task {
         this.description = description;
     }
 
-    public Status getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return id == task.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     @Override
