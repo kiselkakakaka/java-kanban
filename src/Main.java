@@ -15,14 +15,7 @@ public class Main {
         Subtask subtask3 = manager.createSubtask("Подзадача 3", "Описание подзадачи 3", epic2.getId());
 
         // Выводим списки задач
-        System.out.println("Все задачи:");
-        manager.getAllTasks().forEach(System.out::println);
-
-        System.out.println("\nВсе подзадачи:");
-        manager.getAllSubtasks().forEach(System.out::println);
-
-        System.out.println("\nВсе эпики:");
-        manager.getAllEpics().forEach(System.out::println);
+        printAllTasks(manager);
 
         // Изменяем статусы
         task1.setStatus(TaskStatus.IN_PROGRESS);
@@ -39,16 +32,11 @@ public class Main {
 
         // Выводим обновленные данные
         System.out.println("\nПосле изменения статусов:");
-        System.out.println("Задача 1: " + manager.getTask(task1.getId()));
-        System.out.println("Подзадача 1: " + manager.getSubtask(subtask1.getId()));
-        System.out.println("Подзадача 2: " + manager.getSubtask(subtask2.getId()));
-        System.out.println("Подзадача 3: " + manager.getSubtask(subtask3.getId()));
-        System.out.println("Эпик 1: " + manager.getEpic(epic1.getId()));
-        System.out.println("Эпик 2: " + manager.getEpic(epic2.getId()));
+        printTaskInfo(manager, task1, subtask1, subtask2, subtask3, epic1, epic2);
 
         // Получаем подзадачи эпика
         System.out.println("\nПодзадачи Эпика 1:");
-        manager.getSubtasksByEpicId(epic1.getId()).forEach(System.out::println);
+        manager.getSubtasksByEpic(epic1.getId()).forEach(System.out::println);
 
         // Удаляем одну задачу и один эпик
         manager.deleteTask(task1.getId());
@@ -56,6 +44,10 @@ public class Main {
 
         // Выводим итоговые списки
         System.out.println("\nПосле удаления:");
+        printAllTasks(manager);
+    }
+
+    private static void printAllTasks(TaskManager manager) {
         System.out.println("Все задачи:");
         manager.getAllTasks().forEach(System.out::println);
 
@@ -64,5 +56,15 @@ public class Main {
 
         System.out.println("\nВсе эпики:");
         manager.getAllEpics().forEach(System.out::println);
+    }
+
+    private static void printTaskInfo(TaskManager manager, Task task, Subtask subtask1,
+                                      Subtask subtask2, Subtask subtask3, Epic epic1, Epic epic2) {
+        System.out.println("Задача 1: " + manager.getTask(task.getId()));
+        System.out.println("Подзадача 1: " + manager.getSubtask(subtask1.getId()));
+        System.out.println("Подзадача 2: " + manager.getSubtask(subtask2.getId()));
+        System.out.println("Подзадача 3: " + manager.getSubtask(subtask3.getId()));
+        System.out.println("Эпик 1: " + manager.getEpic(epic1.getId()));
+        System.out.println("Эпик 2: " + manager.getEpic(epic2.getId()));
     }
 }
