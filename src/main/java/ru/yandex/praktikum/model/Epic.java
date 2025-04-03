@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Epic extends ru.yandex.praktikum.model.Task {
+public class Epic extends Task {
     private final List<Integer> subtaskIds;
 
     public Epic(int id, String name, String description) {
