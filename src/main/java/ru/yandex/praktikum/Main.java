@@ -35,7 +35,7 @@ public class Main {
         printTaskInfo(manager, task1, subtask1, subtask2, subtask3, epic1, epic2);
 
         System.out.println("\nПодзадачи Эпика 1:");
-        // Здесь замените на getSubtasksByEpicId
+
         manager.getSubtasksByEpicId(epic1.getId()).forEach(System.out::println);
 
         manager.deleteTask(task1.getId());
