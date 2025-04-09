@@ -15,10 +15,9 @@ public class InMemoryHistoryManager implements HistoryManager {
             return;
         }
         
-        history.remove(task); // Удаляем задачу, если она уже есть в истории
-        history.addLast(task); // Добавляем задачу в конец списка
-        
-        // Если размер истории превышает максимальный, удаляем самый старый элемент
+        history.remove(task);
+        history.addLast(task);
+
         while (history.size() > MAX_HISTORY_SIZE) {
             history.removeFirst();
         }

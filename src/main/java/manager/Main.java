@@ -11,7 +11,6 @@ public class Main {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
 
-        // Создаем задачи
         Task task1 = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW);
         Task task2 = new Task("Задача 2", "Описание задачи 2", TaskStatus.NEW);
         Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
@@ -20,7 +19,6 @@ public class Main {
         Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", TaskStatus.NEW, 1);
         Subtask subtask3 = new Subtask("Подзадача 3", "Описание подзадачи 3", TaskStatus.NEW, 2);
 
-        // Добавляем задачи в менеджер
         int task1Id = manager.addNewTask(task1);
         int task2Id = manager.addNewTask(task2);
         int epic1Id = manager.addNewEpic(epic1);
@@ -32,7 +30,6 @@ public class Main {
         int subtask2Id = manager.addNewSubtask(subtask2);
         int subtask3Id = manager.addNewSubtask(subtask3);
 
-        // Выводим все задачи
         System.out.println("Задачи:");
         for (Task task : manager.getTasks()) {
             System.out.println(task);
@@ -50,7 +47,6 @@ public class Main {
             System.out.println(subtask);
         }
 
-        // Обновляем статусы задач
         task1.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateTask(task1);
         subtask1.setStatus(TaskStatus.DONE);
@@ -58,7 +54,6 @@ public class Main {
         subtask2.setStatus(TaskStatus.IN_PROGRESS);
         manager.updateSubtask(subtask2);
 
-        // Выводим обновленные задачи
         System.out.println("\nОбновленные задачи:");
         for (Task task : manager.getTasks()) {
             System.out.println(task);
@@ -72,18 +67,15 @@ public class Main {
             }
         }
 
-        // Выводим историю просмотров
         System.out.println("\nИстория просмотров:");
         for (Task task : manager.getHistory()) {
             System.out.println(task);
         }
 
-        // Удаляем задачи
         manager.removeTask(task1Id);
         manager.removeEpic(epic1Id);
         manager.removeSubtask(subtask3Id);
 
-        // Выводим оставшиеся задачи
         System.out.println("\nОставшиеся задачи:");
         for (Task task : manager.getTasks()) {
             System.out.println(task);
