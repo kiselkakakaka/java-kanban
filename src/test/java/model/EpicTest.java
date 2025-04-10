@@ -40,4 +40,19 @@ class EpicTest {
         epic.addSubtaskId(epic.getId());
         assertFalse(epic.getSubtaskIds().contains(epic.getId()));
     }
+
+    @Test
+    void shouldBeEqualIfSameId() {
+        Epic epic1 = new Epic("Epic 1", "Description 1");
+        Epic epic2 = new Epic("Epic 2", "Description 2");
+        epic2.setId(epic1.getId());
+        assertEquals(epic1, epic2, "Эпики с одинаковым id должны быть равны");
+    }
+
+    @Test
+    void shouldNotBeEqualIfDifferentId() {
+        Epic epic1 = new Epic("Epic 1", "Description 1");
+        Epic epic2 = new Epic("Epic 1", "Description 1");
+        assertNotEquals(epic1, epic2, "Эпики с разными id не должны быть равны");
+    }
 } 
