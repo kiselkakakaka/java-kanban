@@ -42,4 +42,4 @@ class TaskTest {
         Task task2 = new Task("Task 1", "Description 1", TaskStatus.NEW);
         assertNotEquals(task1, task2);
     }
-} 
+}
