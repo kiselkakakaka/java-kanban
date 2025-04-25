@@ -28,4 +28,4 @@ class ManagersTest {
         int taskId = taskManager.addNewTask(task);
         assertNotNull(taskManager.getTask(taskId), "Задача должна быть добавлена в менеджер");
     }
-} 
+}
