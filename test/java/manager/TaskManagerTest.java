@@ -1,5 +1,7 @@
-package manager;
+package java.manager;
 
+import manager.Managers;
+import manager.TaskManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;

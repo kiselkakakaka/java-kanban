@@ -1,4 +1,4 @@
-package manager;
+package java.manager;
 
 import manager.Managers;
 import manager.TaskManager;

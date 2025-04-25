@@ -1,4 +1,4 @@
-package manager;
+package java.manager;
 
 import manager.HistoryManager;
 import manager.InMemoryHistoryManager;
@@ -21,7 +21,7 @@ class HistoryManagerTest {
     @Test
     void shouldNotAddDuplicateTask() {
         Task task = new Task("Test Task", "Test Description", TaskStatus.NEW);
-        task.setId(10); // важно установить ID!
+        task.setId(10);
         historyManager.add(task);
         historyManager.add(task);
 
@@ -35,7 +35,7 @@ class HistoryManagerTest {
     void shouldStoreAllTasksWithoutLimit() {
         for (int i = 0; i < 100; i++) {
             Task task = new Task("Task " + i, "Description " + i, TaskStatus.NEW);
-            task.setId(i); // обязательно установить ID!
+            task.setId(i);
             historyManager.add(task);
         }
         assertEquals(100, historyManager.getHistory().size(), "История должна быть неограниченной");

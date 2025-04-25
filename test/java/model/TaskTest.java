@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 import model.Task;
 import model.TaskStatus;
@@ -33,13 +33,13 @@ class TaskTest {
         Task task1 = new Task("Task 1", "Description 1", TaskStatus.NEW);
         Task task2 = new Task("Task 2", "Description 2", TaskStatus.IN_PROGRESS);
         task2.setId(task1.getId());
-        assertEquals(task1, task2);
+        assertEquals(task1, task2, "Задачи с одинаковым id должны быть равны");
     }
 
     @Test
     void shouldNotBeEqualIfDifferentId() {
         Task task1 = new Task("Task 1", "Description 1", TaskStatus.NEW);
         Task task2 = new Task("Task 1", "Description 1", TaskStatus.NEW);
-        assertNotEquals(task1, task2);
+        assertNotEquals(task1, task2, "Задачи с разными id не должны быть равны");
     }
 }

@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 import model.Subtask;
 import model.TaskStatus;
