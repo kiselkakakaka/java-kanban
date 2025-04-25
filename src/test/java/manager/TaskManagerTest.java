@@ -154,4 +154,4 @@ class TaskManagerTest {
         assertEquals(epic, history.get(1), "Вторая задача в истории должна быть Epic");
         assertEquals(subtask, history.get(2), "Третья задача в истории должна быть Subtask");
     }
-} 
+}
