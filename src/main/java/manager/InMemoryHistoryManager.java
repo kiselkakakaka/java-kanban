@@ -29,7 +29,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (task == null) return;
 
         remove(task.getId());
-
         linkLast(task);
     }
 
@@ -77,6 +76,3 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 }
-
-
-
