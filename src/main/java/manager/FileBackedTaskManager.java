@@ -1,6 +1,10 @@
 package manager;
 
-import model.*;
+import model.Epic;
+import model.Subtask;
+import model.Task;
+import model.TaskStatus;
+import model.TaskType;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -11,6 +15,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(File file) {
         super(new InMemoryHistoryManager());
+        if (file == null) {
+            throw new IllegalArgumentException("Файл не может быть null");
+        }
         this.file = file;
     }
 
@@ -33,6 +40,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
+        if (file.length() == 0) {
+            return manager;
+        }
         try {
             List<String> lines = Files.readAllLines(file.toPath());
             for (int i = 1; i < lines.size(); i++) {
@@ -142,21 +152,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
-        File file = new File("autosave.csv");
-        FileBackedTaskManager manager = new FileBackedTaskManager(file);
+        try {
+            File file = File.createTempFile("autosave", ".csv");
+            file.deleteOnExit();
 
-        Task task = new Task(1, "Задача 1", "Описание задачи 1", TaskStatus.NEW);
-        Epic epic = new Epic(2, "Эпик 1", "Описание эпика 1", TaskStatus.NEW);
-        Subtask sub = new Subtask(3, "Подзадача 1", "Описание подзадачи 1", TaskStatus.NEW, 2);
+            FileBackedTaskManager manager = new FileBackedTaskManager(file);
 
-        manager.addNewTask(task);
-        manager.addNewEpic(epic);
-        manager.addNewSubtask(sub);
+            Task task = new Task(1, "Задача 1", "Описание задачи 1", TaskStatus.NEW);
+            Epic epic = new Epic(2, "Эпик 1", "Описание эпика 1", TaskStatus.NEW);
+            Subtask sub = new Subtask(3, "Подзадача 1", "Описание подзадачи 1", TaskStatus.NEW, 2);
 
-        FileBackedTaskManager loaded = FileBackedTaskManager.loadFromFile(file);
-        System.out.println("Загружено:");
-        loaded.getTasks().forEach(System.out::println);
-        loaded.getEpics().forEach(System.out::println);
-        loaded.getSubtasks().forEach(System.out::println);
+            manager.addNewTask(task);
+            manager.addNewEpic(epic);
+            manager.addNewSubtask(sub);
+
+            FileBackedTaskManager loaded = FileBackedTaskManager.loadFromFile(file);
+            System.out.println("Загружено:");
+            loaded.getTasks().forEach(System.out::println);
+            loaded.getEpics().forEach(System.out::println);
+            loaded.getSubtasks().forEach(System.out::println);
+        } catch (IOException e) {
+            System.err.println("Ошибка при работе с временным файлом: " + e.getMessage());
+        }
     }
 }
