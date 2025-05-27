@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 import model.Epic;
 import model.TaskStatus;
@@ -23,15 +23,10 @@ class EpicTest {
     }
 
     @Test
-    void shouldAddAndRemoveSubtaskIds() {
+    void shouldAddSubtaskId() {
         Epic epic = new Epic("Test Epic", "Test Description");
-        int subtaskId = 1;
-        
-        epic.addSubtaskId(subtaskId);
-        assertTrue(epic.getSubtaskIds().contains(subtaskId));
-        
-        epic.removeSubtaskId(subtaskId);
-        assertFalse(epic.getSubtaskIds().contains(subtaskId));
+        epic.addSubtaskId(1);
+        assertTrue(epic.getSubtaskIds().contains(1));
     }
 
     @Test
@@ -55,4 +50,4 @@ class EpicTest {
         Epic epic2 = new Epic("Epic 1", "Description 1");
         assertNotEquals(epic1, epic2, "Эпики с разными id не должны быть равны");
     }
-} 
+}

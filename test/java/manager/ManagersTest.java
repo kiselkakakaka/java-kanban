@@ -1,4 +1,4 @@
-package manager;
+package java.manager;
 
 import manager.Managers;
 import manager.TaskManager;
@@ -28,4 +28,4 @@ class ManagersTest {
         int taskId = taskManager.addNewTask(task);
         assertNotNull(taskManager.getTask(taskId), "Задача должна быть добавлена в менеджер");
     }
-} 
+}

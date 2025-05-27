@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 import model.Subtask;
 import model.TaskStatus;
@@ -50,4 +50,4 @@ class SubtaskTest {
         Subtask subtask2 = new Subtask("Subtask 1", "Description 1", TaskStatus.NEW, 1);
         assertNotEquals(subtask1, subtask2, "Подзадачи с разными id не должны быть равны");
     }
-} 
+}

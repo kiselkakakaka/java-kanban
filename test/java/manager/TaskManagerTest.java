@@ -1,5 +1,7 @@
-package manager;
+package java.manager;
 
+import manager.Managers;
+import manager.TaskManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -154,4 +156,4 @@ class TaskManagerTest {
         assertEquals(epic, history.get(1), "Вторая задача в истории должна быть Epic");
         assertEquals(subtask, history.get(2), "Третья задача в истории должна быть Subtask");
     }
-} 
+}
