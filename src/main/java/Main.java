@@ -83,6 +83,10 @@ public class Main {
             }
         }
 
+        manager.getTask(task1.getId());
+        manager.getEpic(epic1Id);
+        manager.getSubtask(subtask1.getId());
+
         System.out.println("\nИстория просмотров:");
         for (Task task : manager.getHistory()) {
             System.out.println(task);
