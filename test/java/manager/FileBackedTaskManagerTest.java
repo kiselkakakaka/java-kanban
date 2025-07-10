@@ -1,7 +1,8 @@
-package manager;
+package java.manager;
 
+import manager.FileBackedTaskManager;
+import manager.InMemoryHistoryManager;
 import org.junit.jupiter.api.BeforeEach;
-import manager.TaskManagerTest;
 
 import java.io.File;
 import java.io.IOException;
