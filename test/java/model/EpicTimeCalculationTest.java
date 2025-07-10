@@ -1,14 +1,18 @@
-package model;
+package java.model;
 
 import manager.InMemoryHistoryManager;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
+import model.Epic;
+import model.Subtask;
+import model.TaskStatus;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class EpicTimeCalculationTest {
 
@@ -29,7 +33,7 @@ public class EpicTimeCalculationTest {
         s2.setDuration(Duration.ofMinutes(60));
         manager.addNewSubtask(s2);
 
-        Epic updated = manager.getEpic(epicId);
+        Epic updated = manager.getEpic(epicId).orElseThrow();
         assertEquals(LocalDateTime.of(2025, 7, 6, 9, 0), updated.getStartTime());
         assertEquals(LocalDateTime.of(2025, 7, 6, 11, 30), updated.getEndTime());
         assertEquals(Duration.ofMinutes(105), updated.getDuration());
@@ -41,7 +45,7 @@ public class EpicTimeCalculationTest {
         Epic epic = new Epic("Empty Epic", "desc");
         int epicId = manager.addNewEpic(epic);
 
-        Epic updated = manager.getEpic(epicId);
+        Epic updated = manager.getEpic(epicId).orElseThrow();
         assertNull(updated.getStartTime());
         assertNull(updated.getEndTime());
         assertEquals(Duration.ZERO, updated.getDuration());

@@ -72,7 +72,10 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return (startTime != null && duration != null) ? startTime.plus(duration) : null;
+        if (startTime == null || duration == null) {
+            return null;
+        }
+        return startTime.plus(duration);
     }
 
     public TaskType getType() {
@@ -82,8 +85,7 @@ public class Task {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
+        if (!(o instanceof Task task)) return false;
         return id == task.id;
     }
 
@@ -101,6 +103,7 @@ public class Task {
                 ", status=" + status +
                 ", startTime=" + startTime +
                 ", duration=" + duration +
+                ", endTime=" + getEndTime() +
                 '}';
     }
 }

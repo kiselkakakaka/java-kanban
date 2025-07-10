@@ -1,6 +1,9 @@
-package manager;
-
-import model.*;
+import manager.Managers;
+import manager.TaskManager;
+import model.Task;
+import model.Epic;
+import model.Subtask;
+import model.TaskStatus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -12,16 +15,15 @@ public class Main {
         Task task1 = new Task("Задача 1", "Описание задачи 1", TaskStatus.NEW);
         task1.setStartTime(LocalDateTime.of(2025, 7, 6, 10, 0));
         task1.setDuration(Duration.ofMinutes(30));
+        manager.addNewTask(task1);
 
         Task task2 = new Task("Задача 2", "Описание задачи 2", TaskStatus.NEW);
         task2.setStartTime(LocalDateTime.of(2025, 7, 6, 11, 0));
         task2.setDuration(Duration.ofMinutes(45));
+        manager.addNewTask(task2);
 
         Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
         Epic epic2 = new Epic("Эпик 2", "Описание эпика 2");
-
-        int task1Id = manager.addNewTask(task1);
-        int task2Id = manager.addNewTask(task2);
         int epic1Id = manager.addNewEpic(epic1);
         int epic2Id = manager.addNewEpic(epic2);
 
@@ -37,9 +39,9 @@ public class Main {
         subtask3.setStartTime(LocalDateTime.of(2025, 7, 6, 15, 0));
         subtask3.setDuration(Duration.ofMinutes(50));
 
-        int subtask1Id = manager.addNewSubtask(subtask1);
-        int subtask2Id = manager.addNewSubtask(subtask2);
-        int subtask3Id = manager.addNewSubtask(subtask3);
+        manager.addNewSubtask(subtask1);
+        manager.addNewSubtask(subtask2);
+        manager.addNewSubtask(subtask3);
 
         System.out.println("Задачи:");
         for (Task task : manager.getTasks()) {
@@ -86,9 +88,9 @@ public class Main {
             System.out.println(task);
         }
 
-        manager.removeTask(task1Id);
+        manager.removeTask(task1.getId());
         manager.removeEpic(epic1Id);
-        manager.removeSubtask(subtask3Id);
+        manager.removeSubtask(subtask3.getId());
 
         System.out.println("\nОставшиеся задачи:");
         for (Task task : manager.getTasks()) {

@@ -37,6 +37,7 @@ public class Epic extends Task {
         return TaskType.EPIC;
     }
 
+    @Override
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
@@ -62,9 +63,8 @@ public class Epic extends Task {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Epic epic)) return false;
         if (!super.equals(o)) return false;
-        Epic epic = (Epic) o;
         return Objects.equals(subtaskIds, epic.subtaskIds);
     }
 

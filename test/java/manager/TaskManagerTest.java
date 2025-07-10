@@ -1,13 +1,19 @@
-package manager;
+package java.manager;
 
-import model.*;
+import manager.TaskManager;
+import model.Task;
+import model.Epic;
+import model.Subtask;
+import model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
     protected T manager;
@@ -36,7 +42,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         s2.setDuration(Duration.ofMinutes(20));
         manager.addNewSubtask(s2);
 
-        Epic result = manager.getEpic(eid);
+        Epic result = manager.getEpic(eid).orElseThrow();
         assertEquals(TaskStatus.NEW, result.getStatus());
     }
 
@@ -57,7 +63,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         s2.setDuration(Duration.ofMinutes(20));
         manager.addNewSubtask(s2);
 
-        Epic result = manager.getEpic(eid);
+        Epic result = manager.getEpic(eid).orElse(null);
         assertEquals(TaskStatus.DONE, result.getStatus());
     }
 
@@ -78,7 +84,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         s2.setDuration(Duration.ofMinutes(20));
         manager.addNewSubtask(s2);
 
-        Epic result = manager.getEpic(eid);
+        Epic result = manager.getEpic(eid).orElse(null);
         assertEquals(TaskStatus.IN_PROGRESS, result.getStatus());
     }
 
@@ -94,7 +100,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         s1.setDuration(Duration.ofMinutes(10));
         manager.addNewSubtask(s1);
 
-        Epic result = manager.getEpic(eid);
+        Epic result = manager.getEpic(eid).orElseThrow();
         assertEquals(TaskStatus.IN_PROGRESS, result.getStatus());
     }
 
