@@ -43,23 +43,77 @@ class TaskHandlerTest {
     @Test
     void shouldAddAndReturnTask() throws IOException, InterruptedException {
         Task task = new Task("Task 1", "desc", TaskStatus.NEW);
-        task.setDuration(Duration.ofMinutes(30));
         task.setStartTime(LocalDateTime.now());
+        task.setDuration(Duration.ofMinutes(30));
 
         String json = gson.toJson(task);
-
-        HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/tasks"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(200, response.statusCode());
+        HttpResponse<String> response = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(201, response.statusCode());
 
         List<Task> tasks = manager.getTasks();
         assertEquals(1, tasks.size());
         assertEquals("Task 1", tasks.get(0).getName());
     }
+
+    @Test
+    void shouldReturn404IfTaskNotFound() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/tasks?id=999"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(404, response.statusCode());
+    }
+
+    @Test
+    void shouldReturn406IfTaskConflicts() throws IOException, InterruptedException {
+        Task task1 = new Task("Task1", "desc", TaskStatus.NEW);
+        task1.setStartTime(LocalDateTime.of(2023, 1, 1, 10, 0));
+        task1.setDuration(Duration.ofMinutes(60));
+        manager.addNewTask(task1);
+
+        Task task2 = new Task("Task2", "desc", TaskStatus.NEW);
+        task2.setStartTime(LocalDateTime.of(2023, 1, 1, 10, 30)); // Пересекается
+        task2.setDuration(Duration.ofMinutes(30));
+
+        String json = gson.toJson(task2);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/tasks"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(406, response.statusCode());
+    }
+
+    @Test
+    void shouldReturn400IfJsonInvalid() throws IOException, InterruptedException {
+        String badJson = "{ invalid json }";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/tasks"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(badJson))
+                .build();
+
+        HttpResponse<String> response = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(400, response.statusCode());
+    }
 }
+

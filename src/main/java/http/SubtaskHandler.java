@@ -6,12 +6,13 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
 import model.Subtask;
+import model.exceptions.IntersectionException;
+import model.exceptions.NotFoundException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager manager;
@@ -35,12 +36,8 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                         sendText(exchange, gson.toJson(subtasks));
                     } else {
                         int id = parseId(query);
-                        Optional<Subtask> subtaskOpt = manager.getSubtask(id);
-                        if (subtaskOpt.isPresent()) {
-                            sendText(exchange, gson.toJson(subtaskOpt.get()));
-                        } else {
-                            sendNotFound(exchange);
-                        }
+                        Subtask subtask = manager.getSubtask(id); // может выбросить NotFoundException
+                        sendText(exchange, gson.toJson(subtask));
                     }
                     break;
 
@@ -49,12 +46,12 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                     String json = new String(input.readAllBytes(), StandardCharsets.UTF_8);
                     Subtask subtask = gson.fromJson(json, Subtask.class);
 
-                    if (subtask.getId() != 0 && manager.getSubtask(subtask.getId()).isPresent()) {
+                    if (subtask.getId() != 0) {
                         manager.updateSubtask(subtask);
                     } else {
                         manager.addNewSubtask(subtask);
                     }
-                    sendText(exchange, "Subtask saved");
+                    sendCreated(exchange); // 201
                     break;
 
                 case "DELETE":
@@ -73,9 +70,14 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             }
 
         } catch (JsonSyntaxException e) {
-            sendServerError(exchange, "Invalid JSON: " + e.getMessage());
+            sendError(exchange, 400, "Invalid JSON: " + e.getMessage());
+        } catch (NotFoundException e) {
+            sendNotFound(exchange);
+        } catch (IntersectionException e) {
+            sendConflict(exchange);
         } catch (Exception e) {
-            sendServerError(exchange, e.getMessage());
+            sendError(exchange, 500, "Server error: " + e.getMessage());
         }
     }
 }
+

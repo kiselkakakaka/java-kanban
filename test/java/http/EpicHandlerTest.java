@@ -50,10 +50,37 @@ class EpicHandlerTest {
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
 
         List<Epic> epics = manager.getEpics();
         assertEquals(1, epics.size());
         assertEquals("Epic1", epics.get(0).getName());
     }
+
+    @Test
+    void shouldReturn404IfEpicNotFound() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/epics?id=999"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, response.statusCode());
+    }
+
+    @Test
+    void shouldReturn400OnInvalidJson() throws IOException, InterruptedException {
+        String badJson = "{ bad json }";
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/epics"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(badJson))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(400, response.statusCode());
+    }
 }
+

@@ -61,4 +61,18 @@ class PrioritizedHandlerTest {
         assertEquals(1, prioritized.size(), "В списке приоритетных задач должна быть одна задача");
         assertEquals("Task1", prioritized.get(0).getName(), "Имя приоритетной задачи должно совпадать");
     }
+
+    @Test
+    void shouldReturn405ForUnsupportedMethod() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/prioritized"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(405, response.statusCode(), "Ожидался статус 405 при неверном методе запроса");
+    }
 }
+

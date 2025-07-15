@@ -6,12 +6,12 @@ import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
 import model.Task;
 import model.exceptions.IntersectionException;
+import model.exceptions.NotFoundException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager manager;
@@ -35,12 +35,8 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                         sendText(exchange, gson.toJson(tasks));
                     } else {
                         int id = parseId(query);
-                        Optional<Task> taskOpt = manager.getTask(id);
-                        if (taskOpt.isPresent()) {
-                            sendText(exchange, gson.toJson(taskOpt.get()));
-                        } else {
-                            sendNotFound(exchange);
-                        }
+                        Task task = manager.getTask(id);
+                        sendText(exchange, gson.toJson(task));
                     }
                     break;
 
@@ -48,16 +44,13 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                     InputStream body = exchange.getRequestBody();
                     String json = new String(body.readAllBytes(), StandardCharsets.UTF_8);
                     Task task = gson.fromJson(json, Task.class);
-                    try {
-                        if (task.getId() != 0 && manager.getTask(task.getId()).isPresent()) {
-                            manager.updateTask(task);
-                        } else {
-                            manager.addNewTask(task);
-                        }
-                        sendText(exchange, "OK");
-                    } catch (IntersectionException | IllegalArgumentException e) {
-                        sendConflict(exchange);
+
+                    if (task.getId() != 0) {
+                        manager.updateTask(task);
+                    } else {
+                        manager.addNewTask(task);
                     }
+                    sendCreated(exchange);
                     break;
 
                 case "DELETE":
@@ -75,6 +68,10 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
                     sendMethodNotAllowed(exchange);
             }
 
+        } catch (NotFoundException e) {
+            sendNotFound(exchange);
+        } catch (IntersectionException e) {
+            sendConflict(exchange);
         } catch (Exception e) {
             sendServerError(exchange, e.getMessage());
             e.printStackTrace();

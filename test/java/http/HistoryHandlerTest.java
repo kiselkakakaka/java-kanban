@@ -63,4 +63,17 @@ class HistoryHandlerTest {
         assertEquals(1, history.size(), "История должна содержать одну задачу");
         assertEquals("Task1", history.get(0).getName(), "Имя задачи в истории должно совпадать");
     }
+
+    @Test
+    void shouldReturn405OnInvalidMethod() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/history"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(405, response.statusCode(), "Ожидался статус 405 при использовании неверного метода");
+    }
 }

@@ -6,6 +6,8 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import manager.TaskManager;
 import model.Epic;
+import model.exceptions.IntersectionException;
+import model.exceptions.NotFoundException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,12 +34,8 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                         sendText(exchange, gson.toJson(manager.getEpics()));
                     } else {
                         int id = parseId(query);
-                        Epic epic = manager.getEpic(id).orElse(null);
-                        if (epic != null) {
-                            sendText(exchange, gson.toJson(epic));
-                        } else {
-                            sendNotFound(exchange);
-                        }
+                        Epic epic = manager.getEpic(id); // NotFoundException, если нет
+                        sendText(exchange, gson.toJson(epic));
                     }
                     break;
 
@@ -46,12 +44,12 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                     String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
                     Epic epic = gson.fromJson(body, Epic.class);
 
-                    if (epic.getId() == 0 || manager.getEpic(epic.getId()) == null) {
+                    if (epic.getId() == 0) {
                         manager.addNewEpic(epic);
                     } else {
                         manager.updateEpic(epic);
                     }
-                    sendText(exchange, "Epic saved");
+                    sendCreated(exchange); // 201 вместо 200
                     break;
 
                 case "DELETE":
@@ -66,11 +64,14 @@ public class EpicHandler extends BaseHttpHandler implements HttpHandler {
                     break;
 
                 default:
-                    exchange.sendResponseHeaders(405, 0); // Method Not Allowed
-                    exchange.close();
+                    sendMethodNotAllowed(exchange);
             }
         } catch (JsonSyntaxException e) {
             sendError(exchange, 400, "Invalid JSON format");
+        } catch (NotFoundException e) {
+            sendNotFound(exchange);
+        } catch (IntersectionException e) {
+            sendConflict(exchange);
         } catch (Exception e) {
             sendError(exchange, 500, "Server error: " + e.getMessage());
         }

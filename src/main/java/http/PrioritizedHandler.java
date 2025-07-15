@@ -29,7 +29,8 @@ public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
             List<Task> prioritized = manager.getPrioritizedTasks();
             sendText(exchange, gson.toJson(prioritized));
         } catch (Exception e) {
-            sendServerError(exchange, e.getMessage());
+            sendServerError(exchange, "Server error: " + e.getMessage());
         }
     }
 }
+

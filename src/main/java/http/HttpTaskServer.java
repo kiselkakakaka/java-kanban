@@ -12,13 +12,11 @@ import java.net.InetSocketAddress;
 public class HttpTaskServer {
     public static final int PORT = 8080;
     private final HttpServer server;
-    private final TaskManager manager;
     private static final Gson gson = new GsonBuilder()
             .serializeNulls()
             .create();
 
     public HttpTaskServer(TaskManager manager) throws IOException {
-        this.manager = manager;
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
 
         server.createContext("/tasks", new TaskHandler(manager, gson));
@@ -48,4 +46,5 @@ public class HttpTaskServer {
         server.start();
     }
 }
+
 

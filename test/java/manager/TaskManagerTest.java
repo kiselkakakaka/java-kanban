@@ -42,7 +42,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         s2.setDuration(Duration.ofMinutes(20));
         manager.addNewSubtask(s2);
 
-        Epic result = manager.getEpic(eid).orElseThrow();
+        Epic result = manager.getEpic(eid);
         assertEquals(TaskStatus.NEW, result.getStatus());
     }
 
@@ -63,7 +63,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         s2.setDuration(Duration.ofMinutes(20));
         manager.addNewSubtask(s2);
 
-        Epic result = manager.getEpic(eid).orElse(null);
+        Epic result = manager.getEpic(eid);
         assertEquals(TaskStatus.DONE, result.getStatus());
     }
 
@@ -84,7 +84,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         s2.setDuration(Duration.ofMinutes(20));
         manager.addNewSubtask(s2);
 
-        Epic result = manager.getEpic(eid).orElse(null);
+        Epic result = manager.getEpic(eid);
         assertEquals(TaskStatus.IN_PROGRESS, result.getStatus());
     }
 
@@ -100,7 +100,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         s1.setDuration(Duration.ofMinutes(10));
         manager.addNewSubtask(s1);
 
-        Epic result = manager.getEpic(eid).orElseThrow();
+        Epic result = manager.getEpic(eid);
         assertEquals(TaskStatus.IN_PROGRESS, result.getStatus());
     }
 
