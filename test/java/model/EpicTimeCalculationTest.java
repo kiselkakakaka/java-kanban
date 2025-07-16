@@ -33,7 +33,7 @@ public class EpicTimeCalculationTest {
         s2.setDuration(Duration.ofMinutes(60));
         manager.addNewSubtask(s2);
 
-        Epic updated = manager.getEpic(epicId).orElseThrow();
+        Epic updated = manager.getEpic(epicId);
         assertEquals(LocalDateTime.of(2025, 7, 6, 9, 0), updated.getStartTime());
         assertEquals(LocalDateTime.of(2025, 7, 6, 11, 30), updated.getEndTime());
         assertEquals(Duration.ofMinutes(105), updated.getDuration());
@@ -45,7 +45,7 @@ public class EpicTimeCalculationTest {
         Epic epic = new Epic("Empty Epic", "desc");
         int epicId = manager.addNewEpic(epic);
 
-        Epic updated = manager.getEpic(epicId).orElseThrow();
+        Epic updated = manager.getEpic(epicId);
         assertNull(updated.getStartTime());
         assertNull(updated.getEndTime());
         assertEquals(Duration.ZERO, updated.getDuration());

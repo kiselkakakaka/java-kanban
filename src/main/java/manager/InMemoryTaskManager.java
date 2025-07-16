@@ -4,6 +4,8 @@ import model.Task;
 import model.Epic;
 import model.Subtask;
 import model.TaskStatus;
+import model.exceptions.NotFoundException;
+import model.exceptions.IntersectionException;
 
 import java.util.Objects;
 import java.util.Set;
@@ -16,7 +18,6 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.Comparator;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 public class InMemoryTaskManager implements TaskManager {
     private int nextId = 1;
@@ -90,29 +91,32 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Optional<Task> getTask(int id) {
+    public Task getTask(int id) {
         Task task = tasks.get(id);
-        if (task != null) historyManager.add(task);
-        return Optional.ofNullable(task);
+        if (task == null) throw new NotFoundException("Task not found with id=" + id);
+        historyManager.add(task);
+        return task;
     }
 
     @Override
-    public Optional<Epic> getEpic(int id) {
+    public Epic getEpic(int id) {
         Epic epic = epics.get(id);
-        if (epic != null) historyManager.add(epic);
-        return Optional.ofNullable(epic);
+        if (epic == null) throw new NotFoundException("Epic not found with id=" + id);
+        historyManager.add(epic);
+        return epic;
     }
 
     @Override
-    public Optional<Subtask> getSubtask(int id) {
+    public Subtask getSubtask(int id) {
         Subtask subtask = subtasks.get(id);
-        if (subtask != null) historyManager.add(subtask);
-        return Optional.ofNullable(subtask);
+        if (subtask == null) throw new NotFoundException("Subtask not found with id=" + id);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     @Override
     public int addNewTask(Task task) {
-        if (hasIntersection(task)) throw new IllegalArgumentException("Task intersects with existing one.");
+        if (hasIntersection(task)) throw new IntersectionException("Task intersects with existing one.");
         task.setId(generateId());
         tasks.put(task.getId(), task);
         prioritizedTasks.add(task);
@@ -129,7 +133,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addNewSubtask(Subtask subtask) {
         if (!epics.containsKey(subtask.getEpicId())) return -1;
-        if (hasIntersection(subtask)) throw new IllegalArgumentException("Subtask intersects with existing one.");
+        if (hasIntersection(subtask)) throw new IntersectionException("Subtask intersects with existing one.");
         subtask.setId(generateId());
         subtasks.put(subtask.getId(), subtask);
         epics.get(subtask.getEpicId()).addSubtaskId(subtask.getId());
@@ -140,11 +144,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        if (task == null || !tasks.containsKey(task.getId())) return;
+        if (task == null || !tasks.containsKey(task.getId())) throw new NotFoundException("Task not found with id=" + task.getId());
         prioritizedTasks.remove(tasks.get(task.getId()));
         if (hasIntersection(task)) {
             prioritizedTasks.add(tasks.get(task.getId()));
-            throw new IllegalArgumentException("Updated task intersects with existing one.");
+            throw new IntersectionException("Updated task intersects with existing one.");
         }
         tasks.put(task.getId(), task);
         prioritizedTasks.add(task);
@@ -152,21 +156,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateEpic(Epic epic) {
-        if (epic != null && epics.containsKey(epic.getId())) {
-            Epic existingEpic = epics.get(epic.getId());
-            existingEpic.setName(epic.getName());
-            existingEpic.setDescription(epic.getDescription());
-            updateEpicFields(existingEpic);
-        }
+        if (epic == null || !epics.containsKey(epic.getId())) throw new NotFoundException("Epic not found with id=" + epic.getId());
+        Epic existingEpic = epics.get(epic.getId());
+        existingEpic.setName(epic.getName());
+        existingEpic.setDescription(epic.getDescription());
+        updateEpicFields(existingEpic);
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
-        if (subtask == null || !subtasks.containsKey(subtask.getId())) return;
+        if (subtask == null || !subtasks.containsKey(subtask.getId())) throw new NotFoundException("Subtask not found with id=" + subtask.getId());
         prioritizedTasks.remove(subtasks.get(subtask.getId()));
         if (hasIntersection(subtask)) {
             prioritizedTasks.add(subtasks.get(subtask.getId()));
-            throw new IllegalArgumentException("Updated subtask intersects with existing one.");
+            throw new IntersectionException("Updated subtask intersects with existing one.");
         }
         subtasks.put(subtask.getId(), subtask);
         prioritizedTasks.add(subtask);

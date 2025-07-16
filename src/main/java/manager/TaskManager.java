@@ -3,9 +3,9 @@ package manager;
 import model.Task;
 import model.Epic;
 import model.Subtask;
+import model.exceptions.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TaskManager {
 
@@ -21,11 +21,11 @@ public interface TaskManager {
 
     void removeAllSubtasks();
 
-    Optional<Task> getTask(int id);
+    Task getTask(int id) throws NotFoundException;
 
-    Optional<Epic> getEpic(int id);
+    Epic getEpic(int id) throws NotFoundException;
 
-    Optional<Subtask> getSubtask(int id);
+    Subtask getSubtask(int id) throws NotFoundException;
 
     int addNewTask(Task task);
 
